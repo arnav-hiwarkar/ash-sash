@@ -1,5 +1,43 @@
 {
   "nodes": {
+    "home-manager": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791938526,
+        "narHash": "sha256-yNYK2pdk3bCtJrpblrNYA6hZKdybWUeyTtx74+OEJFo=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "32904dfe1cf86039f3c8c9f41f94e1cfd76dbb34",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-26.05",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "matt-pocock-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791543409,
+        "narHash": "sha256-NljCSZNI3sZ+vbCw7pRdrwR7try4BxOFp4gdjuWYtzs=",
+        "owner": "mattpocock",
+        "repo": "skills",
+        "rev": "49dd158d1076134a641b33efb035946536778336",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mattpocock",
+        "repo": "skills",
+        "rev": "49dd158d1076134a641b33efb035946536778336",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1791254437,
@@ -37,10 +75,48 @@
         "type": "github"
       }
     },
+    "pstack-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791947587,
+        "narHash": "sha256-D/ISnCO2gjY53afZqREsM/RiCrOsnnOVnxQ6cB0E8AA=",
+        "owner": "backnotprop",
+        "repo": "pstack",
+        "rev": "1f0f9c3bac03c4297f6fc8f7644fa412eda57085",
+        "type": "github"
+      },
+      "original": {
+        "owner": "backnotprop",
+        "repo": "pstack",
+        "rev": "1f0f9c3bac03c4297f6fc8f7644fa412eda57085",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
+        "home-manager": "home-manager",
+        "matt-pocock-skills": "matt-pocock-skills",
         "nixpkgs": "nixpkgs",
-        "opencode": "opencode"
+        "opencode": "opencode",
+        "pstack-skills": "pstack-skills",
+        "superpowers-skills": "superpowers-skills"
+      }
+    },
+    "superpowers-skills": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1791592084,
+        "narHash": "sha256-UCVI+T7j1Xh1LDkrvnJduis7eHFqrizCyGTWAGW5d6U=",
+        "owner": "obra",
+        "repo": "superpowers",
+        "rev": "bb92a77741419a4ab5f06e711a283343f1ada0c3",
+        "type": "github"
+      },
+      "original": {
+        "owner": "obra",
+        "repo": "superpowers",
+        "rev": "bb92a77741419a4ab5f06e711a283343f1ada0c3",
+        "type": "github"
       }
     }
   },

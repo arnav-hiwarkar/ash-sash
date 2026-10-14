@@ -15,6 +15,7 @@
       T3CODE_PORT = "3773";
       T3CODE_TAILSCALE_SERVE = "true";
       T3CODE_TAILSCALE_SERVE_PORT = "443";
+      OPENCODE_DISABLE_CLAUDE_CODE_SKILLS = "1";
       NIX_LD = "/run/current-system/sw/share/nix-ld/lib/ld.so";
       NIX_LD_LIBRARY_PATH = "/run/current-system/sw/share/nix-ld/lib";
     };
