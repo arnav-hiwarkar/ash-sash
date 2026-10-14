@@ -93,18 +93,24 @@ The flake dev shell is for x86_64 Linux on sash. The Mac connects by SSH to use 
 
 The administrator is `ash`. Passwords and tokens are stored outside this repo.
 Registration is disabled, repositories default to private, and Git LFS is enabled.
-The Mac's SSH alias is `sash-git`. The server also has an alias named `sash-git`.
+Both machines have the SSH aliases `forgejo` and `sash-git`. Full SSH clone URLs
+from the web interface also select the registered key. The old Mac alias
+`forgejo` is available as `forgejo-arch`.
 
 ```sh
-git clone sash-git:ash/ash-sash.git
+git clone forgejo:ash/ash-sash.git
 ```
 
 To publish a different existing repo, create an empty repo in Forgejo, then:
 
 ```sh
-git remote add forgejo sash-git:ash/REPO.git
-git push -u forgejo main
+git remote add forgejo forgejo:ash/REPO.git
+git push forgejo HEAD
 ```
+
+Follow [the Forgejo guide](docs/forgejo.md) for creating projects, publishing
+existing repositories, and using both GitHub and Forgejo. SSH reference entries
+are in `ssh/mac.conf` and `ssh/sash.conf`. No CI runner is configured.
 
 Forgejo's state, repositories, and SQLite database live in `/var/lib/forgejo`.
 Daily dumps live in `/var/lib/forgejo/dump` and are retained for 14 days. These
