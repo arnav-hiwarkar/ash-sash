@@ -16,7 +16,22 @@
         system = "x86_64-linux";
         modules = [
           ./configuration.nix
-          { nixpkgs.overlays = [ opencode.overlays.default ]; }
+          {
+            nixpkgs.overlays = [
+              opencode.overlays.default
+              (
+                final: prev: {
+                  opencode = prev.opencode.overrideAttrs (old: {
+                    version = "1.19.0";
+                    __intentionallyOverridingVersion = true;
+                    env = old.env // {
+                      OPENCODE_VERSION = "1.19.0";
+                    };
+                  });
+                }
+              )
+            ];
+          }
         ];
       };
       devShells.x86_64-linux.default =
