@@ -95,6 +95,7 @@
     tmux
     jq
     forgejo
+    opencode
   ];
   system.stateVersion = "26.05";
 }
