@@ -22,9 +22,26 @@ points to it. The locked flake uses the machine's existing nixpkgs revision.
 cd ~/ash-sash
 git pull --ff-only
 sudo nixos-rebuild build --flake .#sash
-sudo nixos-rebuild switch --flake .#sash
+sash-rebuild
+sudo journalctl -fu sash-rebuild.service
+# After the log reports completion, press Ctrl+C and verify:
 ./scripts/verify-host.sh
 ```
+
+`sash-rebuild` runs the switch in a separate system service with logs in the
+journal. The rebuild continues if SSH disconnects or T3 restarts. Use it when
+applying changes from a T3 terminal on sash: a foreground rebuild that restarts
+T3 can lose its terminal and fail before bringing T3 back. Before this helper is
+installed, use `bash ~/ash-sash/scripts/rebuild.sh`.
+
+If T3 is offline but SSH works, restore it from your Mac:
+
+```sh
+ssh sash 'systemctl --user start t3code.service'
+```
+
+Keep the existing pairing. Both clients need Tailscale connected and the route
+`https://sash.tail437275.ts.net/`.
 
 The lid can remain closed on AC or battery. Suspend and hibernation are disabled.
 SSH, Tailscale, Forgejo, and T3 start without logging in. T3 runs as `ash` under a
