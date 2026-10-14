@@ -15,6 +15,11 @@ done
 tailscale status --json | jq -e '.BackendState == "Running" and (.Self.DNSName | startswith("sash."))' >/dev/null
 curl -fsS http://127.0.0.1:3773/.well-known/t3/environment | jq -e '.environmentId | length > 0' >/dev/null
 curl -fsS http://127.0.0.1:3000/api/healthz >/dev/null
+t3 connect status | grep -q "Exposure: disabled"
+if systemctl --user status t3code --no-pager | grep -q cloudflared; then
+  echo "FAIL: T3 public tunnel is running" >&2
+  exit 1
+fi
 printf 'PASS: hostname, boot services, lid settings, Tailscale, T3, and Forgejo\n'
 workdir=$(mktemp -d)
 trap 'rm -rf "$workdir"' EXIT

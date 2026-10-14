@@ -35,19 +35,37 @@ binary and preserves the existing `~/.t3` application data and Connect identity.
 
 ## T3 clients
 
-The T3 CLI may report its service as not installed because Nix manages the unit.
-Use `systemctl --user status t3code` to check the actual service.
+This host uses private Tailscale pairing. T3 Connect's public cloud tunnel is
+unlinked and disabled. Keep Tailscale connected on the Mac and phone, using the
+same tailnet account as sash.
 
-A client that saved `https://nixos.tail437275.ts.net/` must switch to the new
-`sash` address. T3 Connect uses the existing environment identity. For direct
-Tailscale pairing, run `t3 pair --tailscale` on sash and open the one-time link
-on the intended Mac or phone. Treat pairing links as credentials.
+1. In T3's connection settings, remove the old T3 Connect route for this machine.
+   Remove the saved `https://nixos.tail437275.ts.net/` route too.
+2. On sash, generate a private one-time pairing link for each client:
+
+```sh
+t3 pair --tailscale --label "Mac"
+t3 pair --tailscale --label "Phone"
+```
+
+3. On the Mac, use Settings → Connections → Add environment and paste its link.
+   On the phone, use Settings → Environments → Add environment and paste its link.
+4. Confirm the route uses `https://sash.tail437275.ts.net/`.
+
+Use a separate link per device. Pairing links are credentials. Clients remain
+paired after the one-time link expires. If you disconnect a client from Tailscale,
+that client must lose access to sash.
 
 ```sh
 systemctl --user status t3code
 journalctl --user -u t3code -n 50
 t3 connect status
 ```
+
+`connect status` must show disabled exposure. Do not run `t3 connect` or enable
+its switch in the UI if you want this host to stay private to Tailscale.
+The T3 CLI can report its service as not installed because Nix manages the unit.
+Use `systemctl --user status t3code` to inspect the actual service.
 
 The Nix-managed service takes effect after removing the old manually installed
 unit from `~/.config/systemd/user`. Reinstalling T3's own service can create a
