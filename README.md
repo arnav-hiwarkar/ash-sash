@@ -1,0 +1,108 @@
+# Sash
+
+Headless NixOS laptop, T3 Code host, Rust development machine, and private Forgejo.
+
+| Service | Address |
+| --- | --- |
+| SSH | `ssh sash` or `ssh ash@100.70.118.124` |
+| T3 over Tailscale | `https://sash.tail437275.ts.net/` |
+| Forgejo | `https://sash.tail437275.ts.net:8443/` |
+| Forgejo Git SSH | `ssh://git@sash.tail437275.ts.net:2222/ash/REPO.git` |
+
+Both devices must be connected to the same Tailscale network for these addresses.
+Forgejo's HTTP backend listens only on localhost. Its SSH port is allowed through
+Tailscale's trusted interface, and is blocked on other network interfaces.
+
+The configuration repository is `/home/ash/ash-sash` on the server. `/etc/nixos`
+points to it. The locked flake uses the machine's existing nixpkgs revision.
+
+## Apply changes
+
+```sh
+cd ~/ash-sash
+git pull --ff-only
+sudo nixos-rebuild build --flake .#sash
+sudo nixos-rebuild switch --flake .#sash
+./scripts/verify-host.sh
+```
+
+The lid can remain closed on AC or battery. Suspend and hibernation are disabled.
+SSH, Tailscale, Forgejo, and T3 start without logging in. T3 runs as `ash` under a
+lingering user manager. T3 waits for clock synchronization and Tailscale before
+starting, so booting with an incorrect hardware clock cannot invalidate its
+cloud credentials. Its Nix-managed unit uses the installed `~/.local/bin/t3`
+binary and preserves the existing `~/.t3` application data and Connect identity.
+
+## T3 clients
+
+The T3 CLI may report its service as not installed because Nix manages the unit.
+Use `systemctl --user status t3code` to check the actual service.
+
+A client that saved `https://nixos.tail437275.ts.net/` must switch to the new
+`sash` address. T3 Connect uses the existing environment identity. For direct
+Tailscale pairing, run `t3 pair --tailscale` on sash and open the one-time link
+on the intended Mac or phone. Treat pairing links as credentials.
+
+```sh
+systemctl --user status t3code
+journalctl --user -u t3code -n 50
+t3 connect status
+```
+
+The Nix-managed service takes effect after removing the old manually installed
+unit from `~/.config/systemd/user`. Reinstalling T3's own service can create a
+local override, so inspect `systemctl --user cat t3code` if behavior changes.
+
+## Rust
+
+Rust, Cargo, rustfmt, Clippy, rust-analyzer, standard-library sources, debuggers,
+C/C++ compilers, CMake, pkg-config, OpenSSL, and libclang are installed.
+`cargo-nextest`, `cargo-audit`, and `cargo-watch` are also available.
+
+For a project environment with native dependency discovery:
+
+```sh
+nix develop ~/ash-sash
+cargo build
+cargo fmt --check
+cargo clippy -- -D warnings
+cargo test
+```
+
+The flake dev shell is for x86_64 Linux on sash. The Mac connects by SSH to use it.
+
+## Forgejo
+
+The administrator is `ash`. Passwords and tokens are stored outside this repo.
+Registration is disabled, repositories default to private, and Git LFS is enabled.
+The Mac's SSH alias is `sash-git`. The server also has an alias named `sash-git`.
+
+```sh
+git clone sash-git:ash/ash-sash.git
+```
+
+To publish a different existing repo, create an empty repo in Forgejo, then:
+
+```sh
+git remote add forgejo sash-git:ash/REPO.git
+git push -u forgejo main
+```
+
+Forgejo's state, repositories, and SQLite database live in `/var/lib/forgejo`.
+Daily dumps live in `/var/lib/forgejo/dump` and are retained for 14 days. These
+backups are on the same disk, so copy them elsewhere for protection against disk
+failure. The dump timer can be checked with `systemctl status forgejo-dump.timer`.
+
+## Recovery
+
+Original Nix files and T3 units are backed up under
+`/var/backups/sash/2026-10-14/`. The known working generation is recorded in
+`working-generation` there. Older generations remain in the GRUB menu.
+
+```sh
+sudo nixos-rebuild switch --rollback
+```
+
+A reboot is needed to use a rolled-back kernel. Check network access before
+rebooting. Do not copy private keys, Tailscale state, T3 data, or Forgejo data into
+this public configuration repository.
