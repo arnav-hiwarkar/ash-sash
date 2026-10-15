@@ -96,6 +96,7 @@
     jq
     forgejo
     opencode
+    fastfetch
   ];
   system.stateVersion = "26.05";
 }
