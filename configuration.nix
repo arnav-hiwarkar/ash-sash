@@ -31,8 +31,31 @@
     enable = true;
     settings = {
       PermitRootLogin = "no";
-      PasswordAuthentication = true;
+      PasswordAuthentication = false;
+      KbdInteractiveAuthentication = false;
     };
+  };
+
+  security.sudo.wheelNeedsPassword = false;
+
+  services.desktopManager.gnome.enable = true;
+  services.gnome.gnome-initial-setup.enable = false;
+  services.displayManager = {
+    gdm = {
+      enable = true;
+      autoSuspend = false;
+    };
+    defaultSession = "gnome";
+    autoLogin = {
+      enable = true;
+      user = "ash";
+    };
+  };
+  hardware.graphics.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    pulse.enable = true;
   };
 
   time.timeZone = "Asia/Kolkata";
@@ -85,6 +108,8 @@
     htop
     fd
     ripgrep
+    cloc
+    speedtest-cli
     fzf
     yazi
     curl
