@@ -96,6 +96,25 @@ in
   home.stateVersion = "26.05";
   programs.home-manager.enable = true;
 
+  # Agent CLIs installed by their upstream installers live in these directories.
+  # Put them on PATH for every shell type, including login shells.
+  home.sessionPath = [
+    "/home/ash/.local/bin"
+    "/home/ash/.local/npm/bin"
+    "/home/ash/.opencode/bin"
+  ];
+  # Note: .local/bin comes before .local/npm/bin so the standalone codex
+  # (newer) wins over the stale npm-installed one.
+
+  # Let home-manager manage .bash_profile/.profile/.bashrc so login shells
+  # actually load the session PATH (NixOS only reads /etc/profile otherwise).
+  programs.bash = {
+    enable = true;
+    bashrcExtra = ''
+      export PATH="/home/ash/.local/bin:/home/ash/.local/npm/bin:/home/ash/.opencode/bin:$PATH"
+    '';
+  };
+
   home.file = homeSkillLinks // claudeSkillLinks // {
     ".config/opencode/opencode.jsonc" = {
       text = builtins.toJSON {
